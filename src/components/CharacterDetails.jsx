@@ -1,22 +1,35 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-function CharacterDetails() {
+function CharacterDetails(props) {
 
-    const {characterId} = useParams();
+    const { characterId } = useParams();
 
     const [characterDetails, setCharacterDetails] = useState({});
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         axios.get(`${import.meta.env.VITE_API_URL}/characters/${characterId}`)
-            .then( response => {
+            .then(response => {
                 setCharacterDetails(response.data)
             })
-            .catch( e => {
+            .catch(e => {
                 console.log("error getting character details from API", e)
             })
     }, [])
+
+    const deleteCharacter = () => {
+        axios.delete(`${import.meta.env.VITE_API_URL}/characters/${characterId}`)
+            .then( response => {
+                props.callbackToUpdateCharacters(); // invoke function in the parent component
+                navigate("/");
+            })
+            .catch( e => {
+                console.log("error deleting character from API", e)
+            })
+    }
 
 
 
@@ -25,6 +38,8 @@ function CharacterDetails() {
             <h1>{characterDetails.name}</h1>
             <p>Occupation: {characterDetails.occupation}</p>
             <p>Weapon: {characterDetails.weapon}</p>
+
+            <button onClick={deleteCharacter}>Delete</button>
         </section>
     )
 }
