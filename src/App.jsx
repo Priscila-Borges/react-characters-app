@@ -9,10 +9,9 @@ function App() {
   const [characters, setCharacters] = useState(null)
 
 
-  const baseURL = "https://ih-crud-api.herokuapp.com"
 
   useEffect(() => {
-    axios.get(baseURL + '/characters')
+    axios.get(`${import.meta.env.VITE_API_URL}/characters`)
       .then(response => {
         setCharacters(response.data)
       })
